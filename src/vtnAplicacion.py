@@ -18,6 +18,11 @@ class Principal(ttk.Frame):
         super().__init__(ventana)
 
         self.opcion=0
+        self.estaAbierto1=False
+        self.estaAbierto2=False
+        self.estaVisualizado=False
+        self.estaVisualizado2=False
+        self.esOpe2=False
 
         ventana.title("Matrices")
 
@@ -78,7 +83,7 @@ class Principal(ttk.Frame):
                           activebackground="#282c34",
                           overrelief="flat",
                           cursor="hand2",
-                          command=self.cargarArchivo)
+                          command=self.oprMatriz)
         btnOperacion.place(x=-17,y=98)
 
         self.img2=Image.open('imagen/mat2.png')
@@ -96,7 +101,7 @@ class Principal(ttk.Frame):
                           activebackground="#282c34",
                           overrelief="flat",
                           cursor="hand2",
-                          command=self.cargarArchivo)
+                          command=self.oprMatriz20)
         btnOperacion2.place(x=-5,y=146)
         self.img3=Image.open('imagen/reporte.png')
         #self.img=self.img.resize((55,40),Image.ANTIALIAS)
@@ -154,6 +159,7 @@ class Principal(ttk.Frame):
 
 
 
+
         pnlMenu.pack(side=LEFT)
         self.pnlPrincipal.pack()
         ventana.mainloop()
@@ -165,17 +171,78 @@ class Principal(ttk.Frame):
     def item_seleccionado(self):
         #item=self.combo.get()
         print("Usted eligio ",item)
-    def rotarHorizontal(self):
-        item=self.lstMatriz1.get()
-        messagebox.showinfo(message="hola",title="info")
+    ### Limpiar la Pantalla o Panel pnlPrincipal
 
-    def union(self):
-        self.limpliarPantalla()
-        self.lstMatriz2["values"]=["matriz1","matriz2","matriz3"]
-        self.lstMatriz2.place(x=200,y=50)
-    def limpliarPantalla(self):
+    def limpiarPantalla(self,codigo):
+        if(codigo==1):
+            self.btnOperacion1.destroy()
+            self.btnOperacion2.destroy()
+            self.btnOperacion3.destroy()
+            self.btnOperacion4.destroy()
+            self.btnOperacion5.destroy()
+            self.btnOperacion6.destroy()
+            self.btnOperacion7.destroy()
+            self.btnOperacion8.destroy()
+
+            self.dFila.destroy()
+            self.hFila.destroy()
+            self.dColumna.destroy()
+            self.hColumna.destroy()
+
+            self.dFilaH.destroy()
+            self.dColumnaH.destroy()
+            self.hColumnaEH.destroy()
+
+            self.dFilaV.destroy()
+            self.dColumnaV.destroy()
+            self.hColumnaEV.destroy()
+
+            self.dFilaR.destroy()
+            self.hFilaR.destroy()
+            self.dColumnaR.destroy()
+            self.hColumnaR.destroy()
+
+            self.dFilaT.destroy()
+            self.hFilaT.destroy()
+            self.dColumnaT.destroy()
+            self.hColumnaT.destroy()
+
+            self.etiBorrar=Label(self.pnlPrincipal)
+            self.etiBorrar.config(bg="#21252b",width="775",height="350")
+            self.etiBorrar.place(x=25,y=100)
+
+            if(self.estaVisualizado==True):
+                self.Mat1.destroy()
+                self.estaVisualizado=False
+
+            if(self.estaVisualizado2==True):
+                self.Mat2.destroy()
+                self.estaVisualizado2=False
+
+            self.estaVisualizado=False
+            self.estaVisualizado2=False
+            self.estaAbierto1=False
+
+        if(codigo==2):
+
+            self.btnOperacion21.destroy()
+            self.btnOperacion22.destroy()
+            self.btnOperacion23.destroy()
+            self.btnOperacion24.destroy()
+
+            self.etiBorrar=Label(self.pnlPrincipal)
+            self.etiBorrar.config(bg="#21252b",width="800",height="350")
+            self.etiBorrar.place(x=20,y=85)
+
+
+
+            self.estaAbierto2=False
+
+
         self.lstMatriz1=ttk.Combobox(self)
         self.lstMatriz2=ttk.Combobox(self)
+
+###     Cargar Archivo   ###
 
     def cargarArchivo(self):
         rutaArchivo=filedialog.askopenfilename(initialdir="logica",title="Abrir archivo")
@@ -202,7 +269,12 @@ class Principal(ttk.Frame):
 
         messagebox.showinfo(message="Archivo Cargado Exitosamente",title="Informacion")
 
+###     Visualizar Matriz Archivo   ###
+
     def visualizarMatriz(self):
+
+        self.estaVisualizado=True
+
         opcion=self.opcion
 
         arch=Archivo()
@@ -218,7 +290,11 @@ class Principal(ttk.Frame):
             arch.graficarProy(dato,0)
 
             self.imgMat1=Image.open('imagen/'+nombre+'.png')
-            self.imgMat1=self.imgMat1.resize((350,350),Image.ANTIALIAS)
+            if(self.esOpe2==True):
+                self.imgMat1=self.imgMat1.resize((240,240),Image.ANTIALIAS)
+            else:
+                self.imgMat1=self.imgMat1.resize((350,350),Image.ANTIALIAS)
+
             self.imgMat1=ImageTk.PhotoImage(self.imgMat1)
 
             self.Mat1=Label(self.pnlPrincipal,text=nombre,
@@ -226,7 +302,14 @@ class Principal(ttk.Frame):
                             compound="top")
 
             self.Mat1.image=self.imgMat1
-            self.Mat1.place(x=225,y=100)
+
+            if(self.esOpe2==True):
+                self.Mat1.place(x=10,y=150)
+            else:
+                self.Mat1.place(x=25,y=100)
+
+
+
             #elf.imgMat1.place(x=400,y=150)
 
             #Graficar imagen 2
@@ -242,7 +325,677 @@ class Principal(ttk.Frame):
             self.Mat2.place(x=300,y=125)
             """
 
+    def visualizarMatriz2(self):
 
+        #self.estaVisualizado=True
+
+        opcion=self.opcion
+
+        arch=Archivo()
+
+        if(opcion==1):
+            nombre=self.cmbMatriz2.get()
+
+            for i in range(1,self.listaMat2.tamano+1):
+                dato=self.listaMat2.getDato(i)
+                if(dato.nombre==nombre):
+                    break
+
+            arch.graficarProy(dato,0)
+
+            self.imgMat2=Image.open('imagen/'+nombre+'.png')
+            self.imgMat2=self.imgMat2.resize((240,240),Image.ANTIALIAS)
+            self.imgMat2=ImageTk.PhotoImage(self.imgMat2)
+
+            self.Mat2=Label(self.pnlPrincipal,text=nombre,
+                            image=self.imgMat2,
+                            compound="top")
+            self.Mat2.image=self.imgMat2
+            self.Mat2.place(x=260,y=150)
+            #elf.imgMat1.place(x=400,y=150)
+
+            #Graficar imagen 2
+            """
+            self.imgMatR=Image.open('imagen/'+nombre+'.png')
+            self.imgMatR=self.imgMat2.resize((225,225),Image.ANTIALIAS)
+            self.imgMatR=ImageTk.PhotoImage(self.imgMat2)
+
+            self.Mat2=Label(self.pnlPrincipal,text=nombre,
+                            image=self.imgMat2,
+                            compound="top")
+            self.Mat2.image=self.imgMat2
+            self.Mat2.place(x=300,y=125)
+            """
+###     Metodos para los botones del menu  ###
+    def oprMatriz(self):
+        self.botonOperacion(1)
+
+
+    def oprMatriz20(self):
+
+        if(self.estaAbierto1==True):
+            self.limpiarPantalla(1)
+
+        self.esOpe2=True
+
+        self.listaMat2=Lista()
+        self.listaMat2=self.listaMat
+
+        self.lblMatriz2=Label(self.pnlPrincipal,text="Elija una matriz =")
+        self.lblMatriz2.config(font=("Verdana",14),
+                                bg="#21252b",
+                                fg="#787e8c" )
+        self.lblMatriz2.place(x=20,y=90)
+
+        self.cmbMatriz2=ttk.Combobox(self.pnlPrincipal)
+
+        for i in range(1,self.listaMat2.tamano+1):
+            dato=self.listaMat2.getDato(i)
+            values = list(self.cmbMatriz2["values"])
+            self.cmbMatriz2["values"] = values + [dato.nombre]
+        self.cmbMatriz2.place(x=200,y=90)
+
+
+        self.btnVisualizar2=Button(self.pnlPrincipal,text="Visualizar Matriz",bg="#2f333d",
+                      relief="flat",
+                      foreground="#787e8c",
+                      activeforeground="#FFFFFF",
+                      activebackground="#282c34",
+                      overrelief="flat",
+                      cursor="hand2",
+                      command=self.visualizarMatriz2
+                      )
+        self.btnVisualizar2.place(x=350,y=90)
+
+        self.botonOperacion2()
+
+### Botones para la Operacion con una Matriz    ###
+
+    def botonOperacion(self,codigo):
+        if(self.estaAbierto2==True):
+            self.limpiarPantalla(2)
+
+        self.estaAbierto1=True
+        self.esOpe2=False
+        self.lstBotones=Lista()
+
+        nombre="Rotar\nHorizontal"
+        self.imgGh=Image.open('imagen/gHor.png')
+        self.imgGh=ImageTk.PhotoImage(self.imgGh)
+
+        self.btnOperacion1=Button(self.pnlPrincipal,image=self.imgGh,text=nombre,
+                          height=100,width=75,
+                          compound="top",
+                          justify="center",
+                          bg="#2f333d",
+                          relief="flat",
+                          foreground="#787e8c",
+                          activeforeground="#FFFFFF",
+                          activebackground="#282c34",
+                          overrelief="flat",
+                          cursor="hand2",
+                          command=self.oprMatriz1)
+        self.btnOperacion1.place(x=30,y=550)
+        nombre="Rotar\nVertical"
+        self.imgGv=Image.open('imagen/gVer.png')
+        self.imgGv=ImageTk.PhotoImage(self.imgGv)
+
+        self.btnOperacion2=Button(self.pnlPrincipal,image=self.imgGv,text=nombre,
+                          height=100,width=75,
+                          compound="top",
+                          justify="center",
+                          bg="#2f333d",
+                          relief="flat",
+                          foreground="#787e8c",
+                          activeforeground="#FFFFFF",
+                          activebackground="#282c34",
+                          overrelief="flat",
+                          cursor="hand2",
+                          command=self.oprMatriz2)
+        self.btnOperacion2.place(x=122,y=550)
+
+        nombre="Transpuesta\n "
+        self.imgT=Image.open('imagen/matT.png')
+        self.imgT=ImageTk.PhotoImage(self.imgT)
+
+        self.btnOperacion3=Button(self.pnlPrincipal,image=self.imgT,text=nombre,
+                          height=100,width=75,
+                          compound="top",
+                          justify="center",
+                          bg="#2f333d",
+                          relief="flat",
+                          foreground="#787e8c",
+                          activeforeground="#FFFFFF",
+                          activebackground="#282c34",
+                          overrelief="flat",
+                          cursor="hand2",
+                          command=self.oprMatriz3)
+        self.btnOperacion3.place(x=214,y=550)
+
+        nombre="Limpiar\nZona"
+        x1=260
+        y1=450
+        ancho="5"
+
+        self.etiqueta("Fil",310,475)
+        self.dFila=Entry(self.pnlPrincipal,width=ancho)
+        self.dFila.insert(0,"Desde")
+        self.dFila.place(x=50+x1,y=50+y1)
+
+        self.hFila=Entry(self.pnlPrincipal,width=ancho)
+        self.hFila.insert(0,"Hasta")
+        self.hFila.place(x=50+x1,y=75+y1)
+
+        self.etiqueta("Col",350,475)
+        self.dColumna=Entry(self.pnlPrincipal,width=ancho)
+        self.dColumna.insert(0,"Desde")
+        self.dColumna.place(x=90+x1,y=50+y1)
+
+        self.hColumna=Entry(self.pnlPrincipal,width=ancho)
+        self.hColumna.insert(0,"Hasta")
+        self.hColumna.place(x=90+x1,y=75+y1)
+
+
+        self.imgLim=Image.open('imagen/lMat.png')
+        self.imgLim=ImageTk.PhotoImage(self.imgLim)
+        self.btnOperacion4=Button(self.pnlPrincipal,image=self.imgLim,text=nombre,
+                          height=100,width=75,
+                          compound="top",
+                          justify="center",
+                          bg="#2f333d",
+                          relief="flat",
+                          foreground="#787e8c",
+                          activeforeground="#FFFFFF",
+                          activebackground="#282c34",
+                          overrelief="flat",
+                          cursor="hand2",
+                          command=self.oprMatriz4)
+        self.btnOperacion4.place(x=306,y=550)
+
+        nombre="Agregar\nLinea Horizontal"
+        x1=352
+        y1=450
+        ancho="5"
+
+        self.etiqueta("Fil",402,475)
+        self.dFilaH=Entry(self.pnlPrincipal,width=ancho)
+        self.dFilaH.place(x=50+x1,y=50+y1)
+
+        self.etiqueta("nEl",402,525)
+
+        self.etiqueta("Col",442,475)
+        self.dColumnaH=Entry(self.pnlPrincipal,width=ancho)
+        self.dColumnaH.place(x=90+x1,y=50+y1)
+
+        self.hColumnaEH=Entry(self.pnlPrincipal,width=ancho)
+        self.hColumnaEH.place(x=90+x1,y=75+y1)
+
+        self.imgLhor=Image.open('imagen/LHor.png')
+        self.imgLhor=ImageTk.PhotoImage(self.imgLhor)
+        self.btnOperacion5=Button(self.pnlPrincipal,image=self.imgLhor,text=nombre,
+                          height=100,width=75,
+                          compound="top",
+                          justify="center",
+                          bg="#2f333d",
+                          relief="flat",
+                          foreground="#787e8c",
+                          activeforeground="#FFFFFF",
+                          activebackground="#282c34",
+                          overrelief="flat",
+                          cursor="hand2",
+                          command=self.oprMatriz5)
+        self.btnOperacion5.place(x=398,y=550)
+        nombre="Agregar\nLinea vertical"
+
+        x1=444
+        y1=450
+        ancho="5"
+        self.etiqueta("Fil",494,475)
+        self.dFilaV=Entry(self.pnlPrincipal,width=ancho)
+        self.dFilaV.place(x=50+x1,y=50+y1)
+
+        self.etiqueta("nEl",494,525)
+
+        self.etiqueta("Col",534,475)
+        self.dColumnaV=Entry(self.pnlPrincipal,width=ancho)
+        self.dColumnaV.place(x=90+x1,y=50+y1)
+
+        self.hColumnaEV=Entry(self.pnlPrincipal,width=ancho)
+        self.hColumnaEV.place(x=90+x1,y=75+y1)
+
+
+        self.imgLver=Image.open('imagen/LVer.png')
+        self.imgLver=ImageTk.PhotoImage(self.imgLver)
+        self.btnOperacion6=Button(self.pnlPrincipal,image=self.imgLver,text=nombre,
+                          height=100,width=75,
+                          compound="top",
+                          justify="center",
+                          bg="#2f333d",
+                          relief="flat",
+                          foreground="#787e8c",
+                          activeforeground="#FFFFFF",
+                          activebackground="#282c34",
+                          overrelief="flat",
+                          cursor="hand2",
+                          command=self.oprMatriz6)
+        self.btnOperacion6.place(x=490,y=550)
+
+        nombre="Agregar\nRectangulo"
+
+        x1=536
+        y1=450
+        ancho="5"
+
+        self.etiqueta("Fil",586,475)
+        self.dFilaR=Entry(self.pnlPrincipal,width=ancho)
+        self.dFilaR.insert(0,"Desde")
+        self.dFilaR.place(x=50+x1,y=50+y1)
+
+        self.hFilaR=Entry(self.pnlPrincipal,width=ancho)
+        self.hFilaR.insert(0,"Hasta")
+        self.hFilaR.place(x=50+x1,y=75+y1)
+
+        self.etiqueta("Col",626,475)
+        self.dColumnaR=Entry(self.pnlPrincipal,width=ancho)
+        self.dColumnaR.insert(0,"Desde")
+        self.dColumnaR.place(x=90+x1,y=50+y1)
+
+        self.hColumnaR=Entry(self.pnlPrincipal,width=ancho)
+        self.hColumnaR.insert(0,"Hasta")
+        self.hColumnaR.place(x=90+x1,y=75+y1)
+
+
+
+        self.imgRec=Image.open('imagen/rect.png')
+        self.imgRec=ImageTk.PhotoImage(self.imgRec)
+        self.btnOperacion7=Button(self.pnlPrincipal,image=self.imgRec,text=nombre,
+                          height=100,width=75,
+                          compound="top",
+                          justify="center",
+                          bg="#2f333d",
+                          relief="flat",
+                          foreground="#787e8c",
+                          activeforeground="#FFFFFF",
+                          activebackground="#282c34",
+                          overrelief="flat",
+                          cursor="hand2",
+                          command=self.oprMatriz7)
+        self.btnOperacion7.place(x=582,y=550)
+
+        nombre="Agregar\nTriangulo"
+
+        x1=628
+        y1=450
+        ancho="5"
+
+        self.etiqueta("Fil",678,475)
+        self.dFilaT=Entry(self.pnlPrincipal,width=ancho)
+        self.dFilaT.insert(0,"Desde")
+        self.dFilaT.place(x=50+x1,y=50+y1)
+
+        self.hFilaT=Entry(self.pnlPrincipal,width=ancho)
+        self.hFilaT.insert(0,"Hasta")
+        self.hFilaT.place(x=50+x1,y=75+y1)
+
+        self.etiqueta("Col",718,475)
+        self.dColumnaT=Entry(self.pnlPrincipal,width=ancho)
+        self.dColumnaT.insert(0,"Desde")
+        self.dColumnaT.place(x=90+x1,y=50+y1)
+
+        self.hColumnaT=Entry(self.pnlPrincipal,width=ancho)
+        self.hColumnaT.insert(0,"Hasta")
+        self.hColumnaT.place(x=90+x1,y=75+y1)
+
+
+
+        self.imgTri=Image.open('imagen/tRec.png')
+        self.imgTri=ImageTk.PhotoImage(self.imgTri)
+        self.btnOperacion8=Button(self.pnlPrincipal,image=self.imgTri,text=nombre,
+                          height=100,width=75,
+                          compound="top",
+                          justify="center",
+                          bg="#2f333d",
+                          relief="flat",
+                          foreground="#787e8c",
+                          activeforeground="#FFFFFF",
+                          activebackground="#282c34",
+                          overrelief="flat",
+                          cursor="hand2",
+                          command=self.oprMatriz8)
+        self.btnOperacion8.place(x=674,y=550)
+
+
+### Botones para la Operacion con una Matriz    ###
+
+    def botonOperacion2(self):
+
+
+
+        self.estaAbierto2=True
+        separacion=50
+        nombre="Union"
+        self.imgUn=Image.open('imagen/union.png')
+        self.imgUn=ImageTk.PhotoImage(self.imgUn)
+        self.btnOperacion21=Button(self.pnlPrincipal,image=self.imgUn,text=nombre,
+                          height=100,width=125,
+                          compound="top",
+                          justify="center",
+                          bg="#2f333d",
+                          relief="flat",
+                          foreground="#787e8c",
+                          activeforeground="#FFFFFF",
+                          activebackground="#282c34",
+                          overrelief="flat",
+                          cursor="hand2",
+                          command=self.oprMatriz21)
+        self.btnOperacion21.place(x=50+separacion,y=550)
+        separacion+=150
+
+        nombre="Interseccion"
+        self.imgInt=Image.open('imagen/interseccion.png')
+        self.imgInt=ImageTk.PhotoImage(self.imgInt)
+        self.btnOperacion22=Button(self.pnlPrincipal,image=self.imgInt,text=nombre,
+                          height=100,width=125,
+                          compound="top",
+                          justify="center",
+                          bg="#2f333d",
+                          relief="flat",
+                          foreground="#787e8c",
+                          activeforeground="#FFFFFF",
+                          activebackground="#282c34",
+                          overrelief="flat",
+                          cursor="hand2",
+                          command=self.oprMatriz22)
+        self.btnOperacion22.place(x=50+separacion,y=550)
+        separacion+=150
+
+        nombre="Diferencia"
+        self.imgDi=Image.open('imagen/diferencia.png')
+        self.imgDi=ImageTk.PhotoImage(self.imgDi)
+        self.btnOperacion23=Button(self.pnlPrincipal,image=self.imgDi,text=nombre,
+                          height=100,width=125,
+                          compound="top",
+                          justify="center",
+                          bg="#2f333d",
+                          relief="flat",
+                          foreground="#787e8c",
+                          activeforeground="#FFFFFF",
+                          activebackground="#282c34",
+                          overrelief="flat",
+                          cursor="hand2",
+                          command=self.oprMatriz23)
+        self.btnOperacion23.place(x=50+separacion,y=550)
+        separacion+=150
+
+        nombre="Diferencia Simetrica"
+        self.imgDifSim=Image.open('imagen/difSimetrica.png')
+        self.imgDifSim=ImageTk.PhotoImage(self.imgDifSim)
+        self.btnOperacion24=Button(self.pnlPrincipal,image=self.imgDifSim,text=nombre,
+                          height=100,width=125,
+                          compound="top",
+                          justify="center",
+                          bg="#2f333d",
+                          relief="flat",
+                          foreground="#787e8c",
+                          activeforeground="#FFFFFF",
+                          activebackground="#282c34",
+                          overrelief="flat",
+                          cursor="hand2",
+                          command=self.oprMatriz24)
+        self.btnOperacion24.place(x=50+separacion,y=550)
+        separacion+=150
+
+
+
+####   Operaciones con una matriz  ####
+
+    def oprMatriz1(self):
+        #messagebox.showinfo(message=self.btnOperacion1.cget("text") +" "+ self.cmbMatriz1.get(),title="Informacion")
+        arch=Archivo()
+        nombre=self.cmbMatriz1.get()
+        #messagebox.showinfo(message=nombre,title="Informacion")
+        for i in range(1,self.listaMat.tamano+1):
+            dato=self.listaMat.getDato(i)
+            if(dato.nombre==nombre):
+                break
+        arch.graficarProy(dato,1)
+
+
+
+        self.imgMat2=Image.open('imagen/'+nombre+"G.Horizontal"+'.png')
+        self.imgMat2=self.imgMat2.resize((350,350),Image.ANTIALIAS)
+        self.imgMat2=ImageTk.PhotoImage(self.imgMat2)
+        self.Mat2=Label(self.pnlPrincipal,text=nombre+"G.Horizontal",
+                        image=self.imgMat2,
+                        compound="top")
+
+        self.Mat2.image=self.imgMat2
+        self.Mat2.place(x=400,y=100)
+
+         #print(self.cmbMatriz1.get())
+
+    def imgOperacion(self,nombre):
+        self.estaVisualizado2=True
+
+        self.imgMat2=Image.open('imagen/'+nombre+'.png')
+        self.imgMat2=self.imgMat2.resize((350,350),Image.ANTIALIAS)
+        self.imgMat2=ImageTk.PhotoImage(self.imgMat2)
+        self.Mat2=Label(self.pnlPrincipal,text=nombre,
+                        image=self.imgMat2,
+                        compound="top")
+        self.Mat2.image=self.imgMat2
+        self.Mat2.place(x=400,y=100)
+
+    def imgOperacionR(self,nombre):
+        self.estaVisualizado2=True
+
+        self.imgMatR=Image.open('imagen/'+nombre+'.png')
+        self.imgMatR=self.imgMatR.resize((240,240),Image.ANTIALIAS)
+        self.imgMatR=ImageTk.PhotoImage(self.imgMatR)
+        self.MatR=Label(self.pnlPrincipal,text=nombre,
+                        image=self.imgMatR,
+                        compound="top")
+        self.MatR.image=self.imgMatR
+        self.MatR.place(x=515,y=150)
+
+
+
+    def oprMatriz2(self):
+        arch=Archivo()
+        nombre=self.cmbMatriz1.get()
+        #messagebox.showinfo(message=nombre,title="Informacion")
+        for i in range(1,self.listaMat.tamano+1):
+            dato=self.listaMat.getDato(i)
+            if(dato.nombre==nombre):
+                break
+        arch.graficarProy(dato,2)
+        nombre=nombre+"G.Vertical"
+        self.imgOperacion(nombre)
+
+    def oprMatriz3(self):
+        arch=Archivo()
+        nombre=self.cmbMatriz1.get()
+        for i in range(1,self.listaMat.tamano+1):
+            dato=self.listaMat.getDato(i)
+            if(dato.nombre==nombre):
+                break
+        arch.graficarProy(dato,3)
+        nombre=nombre+"Transpuesta"
+        self.imgOperacion(nombre)
+
+    def oprMatriz4(self):
+        arch=Archivo()
+        nombre=self.cmbMatriz1.get()
+        for i in range(1,self.listaMat.tamano+1):
+            dato=self.listaMat.getDato(i)
+            if(dato.nombre==nombre):
+                break
+        dFila=int(self.dFila.get())
+        dColumna=int(self.dColumna.get())
+        hFila=int(self.hFila.get())
+        hColumna=int(self.hColumna.get())
+
+        arch.graficarRellenarArea(0,dato,dFila,hFila,dColumna,hColumna)
+        nombre=nombre+"Limpiar"
+        self.imgOperacion(nombre)
+
+
+        messagebox.showinfo(message=self.btnOperacion4.cget("text"),title="Informacion")
+    def oprMatriz5(self):
+        arch=Archivo()
+        nombre=self.cmbMatriz1.get()
+        for i in range(1,self.listaMat.tamano+1):
+            dato=self.listaMat.getDato(i)
+            if(dato.nombre==nombre):
+                break
+        Fila=int(self.dFilaH.get())
+        Columna=int(self.dColumnaH.get())
+        nElementos=int(self.hColumnaEH.get())
+
+        arch.graficarRellenarArea(1,dato,Fila,Columna,nElementos,0)
+        nombre=nombre+"LineaHorizontal"
+
+        self.imgOperacion(nombre)
+
+        messagebox.showinfo(message=self.btnOperacion5.cget("text"),title="Informacion")
+    def oprMatriz6(self):
+        arch=Archivo()
+        nombre=self.cmbMatriz1.get()
+        for i in range(1,self.listaMat.tamano+1):
+            dato=self.listaMat.getDato(i)
+            if(dato.nombre==nombre):
+                break
+        Fila=int(self.dFilaV.get())
+        Columna=int(self.dColumnaV.get())
+        nElementos=int(self.hColumnaEV.get())
+
+        arch.graficarRellenarArea(2,dato,Fila,Columna,nElementos,0)
+        nombre=nombre+"LineaVertical"
+        self.imgOperacion(nombre)
+        messagebox.showinfo(message=self.btnOperacion6.cget("text"),title="Informacion")
+
+    def oprMatriz7(self):
+        arch=Archivo()
+        nombre=self.cmbMatriz1.get()
+        for i in range(1,self.listaMat.tamano+1):
+            dato=self.listaMat.getDato(i)
+            if(dato.nombre==nombre):
+                break
+
+        dFila=int(self.dFilaR.get())
+        dColumna=int(self.dColumnaR.get())
+        hFila=int(self.hFilaR.get())
+        hColumna=int(self.hColumnaR.get())
+
+        arch.graficarRellenarArea(3,dato,dFila,hFila,dColumna,hColumna)
+        nombre=nombre+"Rectangulo"
+        self.imgOperacion(nombre)
+        messagebox.showinfo(message=self.btnOperacion7.cget("text"),title="Informacion")
+
+    def oprMatriz8(self):
+        arch=Archivo()
+        nombre=self.cmbMatriz1.get()
+        for i in range(1,self.listaMat.tamano+1):
+            dato=self.listaMat.getDato(i)
+            if(dato.nombre==nombre):
+                break
+        dFila=int(self.dFilaT.get())
+        dColumna=int(self.dColumnaT.get())
+        hFila=int(self.hFilaT.get())
+        hColumna=int(self.hColumnaT.get())
+
+        arch.graficarRellenarArea(4,dato,dFila,hFila,dColumna,hColumna)
+        nombre=nombre+"Triangulo"
+        self.imgOperacion(nombre)
+        messagebox.showinfo(message=self.btnOperacion8.cget("text"),title="Informacion")
+
+
+###    Operaciones con dos matrices   ###
+
+    def oprMatriz21(self):
+        arch=Archivo()
+        nombre1=self.cmbMatriz1.get()
+        for i in range(1,self.listaMat.tamano+1):
+            dato1=self.listaMat.getDato(i)
+            if(dato1.nombre==nombre1):
+                break
+        nombre2=self.cmbMatriz2.get()
+        for j in range(1,self.listaMat.tamano+1):
+            dato2=self.listaMat.getDato(j)
+            if(dato2.nombre==nombre2):
+                break
+        arch.graficarOperacion(1,dato1,dato2)
+        nombre=nombre1+"Union"+nombre2
+        self.imgOperacionR(nombre)
+
+        messagebox.showinfo(message=self.btnOperacion21.cget("text"),title="Informacion")
+
+
+    def oprMatriz22(self):
+        arch=Archivo()
+        nombre1=self.cmbMatriz1.get()
+        for i in range(1,self.listaMat.tamano+1):
+            dato1=self.listaMat.getDato(i)
+            if(dato1.nombre==nombre1):
+                break
+        nombre2=self.cmbMatriz2.get()
+        for j in range(1,self.listaMat.tamano+1):
+            dato2=self.listaMat.getDato(j)
+            if(dato2.nombre==nombre2):
+                break
+        arch.graficarOperacion(2,dato1,dato2)
+        nombre=nombre1+"Interseccion"+nombre2
+        self.imgOperacionR(nombre)
+
+
+        messagebox.showinfo(message=self.btnOperacion22.cget("text"),title="Informacion")
+    def oprMatriz23(self):
+        arch=Archivo()
+        nombre1=self.cmbMatriz1.get()
+        for i in range(1,self.listaMat.tamano+1):
+            dato1=self.listaMat.getDato(i)
+            if(dato1.nombre==nombre1):
+                break
+        nombre2=self.cmbMatriz2.get()
+        for j in range(1,self.listaMat.tamano+1):
+            dato2=self.listaMat.getDato(j)
+            if(dato2.nombre==nombre2):
+                break
+        arch.graficarOperacion(3,dato1,dato2)
+        nombre=nombre1+"Diferencia"+nombre2
+        self.imgOperacionR(nombre)
+
+        messagebox.showinfo(message=self.btnOperacion23.cget("text"),title="Informacion")
+    def oprMatriz24(self):
+        arch=Archivo()
+        nombre1=self.cmbMatriz1.get()
+        for i in range(1,self.listaMat.tamano+1):
+            dato1=self.listaMat.getDato(i)
+            if(dato1.nombre==nombre1):
+                break
+        nombre2=self.cmbMatriz2.get()
+        for j in range(1,self.listaMat.tamano+1):
+            dato2=self.listaMat.getDato(j)
+            if(dato2.nombre==nombre2):
+                break
+        arch.graficarOperacion(4,dato1,dato2)
+        nombre=nombre1+"Dif_Simetrica"+nombre2
+        self.imgOperacionR(nombre)
+
+
+
+
+
+        messagebox.showinfo(message=self.btnOperacion24.cget("text"),title="Informacion")
+
+####  Etiqueta para Operaciones  ####
+
+    def etiqueta(self,texto,x1,y1):
+        self.lblOpe=Label(self.pnlPrincipal,text=texto)
+        self.lblOpe.config(font=("Verdana",12),
+                                bg="#21252b",
+                                fg="#787e8c" )
+        self.lblOpe.place(x=x1,y=y1)
 
 ventana=tk.Tk()
 app=Principal(ventana)
