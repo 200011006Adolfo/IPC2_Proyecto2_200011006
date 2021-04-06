@@ -105,6 +105,21 @@ class Archivo(object):
                         lin+=1
                         print(linea)
                         linea=""
+            if(op==1):
+                nombre=mat.nombre+"G.Horizontal"
+                matrizOri=Matriz("Original")
+                matOri=matrizOri.llenarMatriz(mat)
+                matAux=matrizOri.girarHorizontal(mat,matOri)
+            if(op==2):
+                nombre=mat.nombre+"G.Vertical"
+                matrizOri=Matriz("Original")
+                matOri=matrizOri.llenarMatriz(mat)
+                matAux=matrizOri.girarVertical(mat,matOri)
+            if(op==3):
+                nombre=mat.nombre+"Transpuesta"
+                matrizOri=Matriz("Original")
+                matOri=matrizOri.llenarMatriz(mat)
+                matAux=matrizOri.transpuesta(mat,matOri)
 
 
             texto=self.tabla(mat,matAux)
@@ -114,7 +129,91 @@ class Archivo(object):
             s.node('struct1', '''<'''+texto +'''
                     >''')
             s.render("imagen/"+nombre,format="png",view=False)
-            #s.view()
+            #s.view
+
+    def graficarRellenarArea(self,op,datoMatriz,x1,x2,y1,y2):
+        os.system("cls")
+        print("graficando....")
+        mat=datoMatriz
+        nombre=mat.nombre
+        imagen=mat.dato
+
+        matrizOri=Matriz("Original")
+
+        if(op==0):
+            nombre=mat.nombre+"Limpiar"
+            matrizOri=Matriz("Original")
+            matOri=matrizOri.llenarMatriz(mat)
+            matAux=matrizOri.limpiarArea(mat,matOri,x1,x2,y1,y2)
+
+        if(op==1):
+            nombre=mat.nombre+"LineaHorizontal"
+            matOri=matrizOri.llenarMatriz(mat)
+            matAux=matrizOri.llenarLineaHorizontal(mat,matOri,x1,x2,y1)
+        if(op==2):
+            nombre=mat.nombre+"LineaVertical"
+            matOri=matrizOri.llenarMatriz(mat)
+            matAux=matrizOri.llenarLineaVertical(mat,matOri,x1,x2,y1)
+        if(op==3):
+            nombre=mat.nombre+"Rectangulo"
+            matOri=matrizOri.llenarMatriz(mat)
+            matAux=matrizOri.llenarRectangulo(mat,matOri,x1,x2,y1,y2)
+
+        if(op==4):
+            nombre=mat.nombre+"Triangulo"
+            matOri=matrizOri.llenarMatriz(mat)
+            matAux=matrizOri.llenarTriangulo(mat,matOri,x1,x2,y1,y2)
+
+        texto=self.tabla(mat,matAux)
+
+        #print(texto)
+        s = dg('structs', node_attr={'shape': 'plaintext'})
+        s.node('struct1', '''<'''+texto +'''
+                >''')
+        s.render("imagen/"+nombre,format="png",view=False)
+        #s.view()
+    def graficarOperacion(self,op,datoMatriz1,datoMatriz2):
+        os.system("cls")
+        print("graficando....")
+        mat1=datoMatriz1
+        nombre1=mat1.nombre
+        imagen1=mat1.dato
+
+        mat2=datoMatriz2
+        nombre2=mat2.nombre
+        imagen2=mat2.dato
+
+        matrizOri1=Matriz("Original1")
+        matrizOri2=Matriz("Original2")
+
+        if(op==1):
+            nombre=mat1.nombre+"Union"+mat2.nombre
+            matOri1=matrizOri1.llenarMatriz(mat1)
+            matOri2=matrizOri2.llenarMatriz(mat2)
+            matAux=matrizOri1.unionDeMatrices(mat1,mat2,matOri1,matOri2)
+        if(op==2):
+            nombre=mat1.nombre+"Interseccion"+mat2.nombre
+            matOri1=matrizOri1.llenarMatriz(mat1)
+            matOri2=matrizOri2.llenarMatriz(mat2)
+            matAux=matrizOri1.interseccionDeMatrices(mat1,mat2,matOri1,matOri2)
+        if(op==3):
+            nombre=mat1.nombre+"Diferencia"+mat2.nombre
+            matOri1=matrizOri1.llenarMatriz(mat1)
+            matOri2=matrizOri2.llenarMatriz(mat2)
+            matAux=matrizOri1.diferenciaDeMatrices(mat1,mat2,matOri1,matOri2)
+        if(op==4):
+            nombre=mat1.nombre+"Dif_Simetrica"+mat2.nombre
+            matOri1=matrizOri1.llenarMatriz(mat1)
+            matOri2=matrizOri2.llenarMatriz(mat2)
+            matAux=matrizOri1.difSimetricaDeMatrices(mat1,mat2,matOri1,matOri2)
+        texto=self.tabla(mat1,matAux)
+
+        #print(texto)
+        s = dg('structs', node_attr={'shape': 'plaintext'})
+        s.node('struct1', '''<'''+texto +'''
+                >''')
+        s.render("imagen/"+nombre,format="png",view=False)
+
 
     def tabla(self,dtsMatriz,mAux):
 
