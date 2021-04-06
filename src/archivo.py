@@ -2,6 +2,8 @@ import xml.etree.ElementTree as et
 from graphviz import Digraph as dg
 from matriz import *
 from lstCircular import *
+from datetime import datetime
+import time
 import os
 import re
 
@@ -15,7 +17,10 @@ class Archivo(object):
 
     def abrir(self,rutaArchivo):
         os.system("cls")
+
         try:
+            self.abrirHtml()
+
             print(rutaArchivo)
             arbol=et.parse(rutaArchivo)
             raiz=arbol.getroot()
@@ -58,6 +63,11 @@ class Archivo(object):
                                             imagen=subElemento.text
                                             matAux.matrizAux(nombre,fila,columna,imagen)
                                             self.listaMatriz.agregar(matAux)
+                                            nCar=matAux.contar(imagen)
+
+                                            self.datosHtml(nombre,str(nCar[0]),str(nCar[1]))
+
+
 
                                         elif(nsubElement==4 and subElemento.tag!="imagen"):
                                             print("Error 104 se esperaba la etiqueta imagen")
@@ -68,11 +78,19 @@ class Archivo(object):
 
 
                             nsubElement+=1
+
+
+
                     else:
                         print("Error 100 se esperaba la etiqueta matriz")
                         break;
+
             else:
                 print("Error 1 ")
+
+
+            self.cerrarHtml()
+
 
         except FileNotFoundError as e:
             print("El archivo no existe")
@@ -262,3 +280,106 @@ class Archivo(object):
             texto=archivo.read()
             archivo.close()
             return texto
+
+    def abrirHtml(self):
+        self.archivo=open("Html/entrada.html","w")
+        self.archivo.write("<html>")
+        self.archivo.write("<head>")
+        self.archivo.write("<title>")
+        self.archivo.write("Datos de entrada del archivo")
+        self.archivo.write("</title>")
+        self.archivo.write("</head>")
+        self.archivo.write("<body>")
+        self.archivo.write("<table>")
+        self.archivo.write("<tr>")
+        self.archivo.write("<th>fecha</th>")
+        self.archivo.write("<th>hora</th>")
+        self.archivo.write("<th>Nombre</th>")
+        self.archivo.write("<th>Espacios LLenos</th>")
+        self.archivo.write("<th>Espacios Vacios</th>")
+        self.archivo.write("</tr>")
+
+    def datosHtml(self,nombre,espLleno,espVacio):
+
+        self.archivo.write("<tr>")
+        self.archivo.write("<td>"+time.strftime("%x")+"</td>")
+        self.archivo.write("<td>"+time.strftime("%X")+"</td>")
+        self.archivo.write("<td>"+nombre+"</td>")
+        self.archivo.write("<td>"+espLleno+"</td>")
+        self.archivo.write("<td>"+espVacio+"</td>")
+        self.archivo.write("</tr>")
+
+    def cerrarHtml(self):
+        self.archivo.write("</tr>")
+        self.archivo.write("</table>")
+        self.archivo.write("</body>")
+        self.archivo.write("</html>")
+        self.archivo.close()
+
+    def abrirHtmlOperacion(self):
+        self.archivo=open("Html/Operacion.html","w")
+        self.archivo.write("<html>")
+        self.archivo.write("<head>")
+        self.archivo.write("<title>")
+        self.archivo.write("Datos de entrada del archivo")
+        self.archivo.write("</title>")
+        self.archivo.write("</head>")
+        self.archivo.write("<body>")
+        self.archivo.write("<table>")
+        self.archivo.write("<tr>")
+        self.archivo.write("<th>fecha</th>")
+        self.archivo.write("<th>hora</th>")
+        self.archivo.write("<th>Tipo de Operacion</th>")
+        self.archivo.write("<th>Matrices Involucradas</th>")
+        self.archivo.write("</tr>")
+
+    def datosHtmlOperacion(self,tipo,matricesInv):
+
+        self.archivo.write("<tr>")
+        self.archivo.write("<td>"+time.strftime("%x")+"</td>")
+        self.archivo.write("<td>"+time.strftime("%X")+"</td>")
+        self.archivo.write("<td>"+tipo+"</td>")
+        self.archivo.write("<td>"+matricesInv+"</td>")
+        self.archivo.write("</tr>")
+
+    def cerrarHtmlOperacion(self):
+        self.archivo.write("</tr>")
+        self.archivo.write("</table>")
+        self.archivo.write("</body>")
+        self.archivo.write("</html>")
+        self.archivo.close()
+
+    def abrirHtmlErrores(self):
+        self.archivo=open("Html/Errores.html","w")
+        self.archivo.write("<html>")
+        self.archivo.write("<head>")
+        self.archivo.write("<title>")
+        self.archivo.write("Datos de entrada del archivo")
+        self.archivo.write("</title>")
+        self.archivo.write("</head>")
+        self.archivo.write("<body>")
+        self.archivo.write("<table>")
+        self.archivo.write("<tr>")
+        self.archivo.write("<th>fecha</th>")
+        self.archivo.write("<th>hora</th>")
+        self.archivo.write("<th>Tipo de Operacion</th>")
+        self.archivo.write("<th>Matrices Involucradas</th>")
+        self.archivo.write("<th>Descripcion</th>")
+        self.archivo.write("</tr>")
+
+    def datosHtmlErrores(self,tipo,matricesInv,descripcion):
+
+        self.archivo.write("<tr>")
+        self.archivo.write("<td>"+time.strftime("%x")+"</td>")
+        self.archivo.write("<td>"+time.strftime("%X")+"</td>")
+        self.archivo.write("<td>"+tipo+"</td>")
+        self.archivo.write("<td>"+matricesInv+"</td>")
+        self.archivo.write("<td>"+descripcion+"</td>")
+        self.archivo.write("</tr>")
+
+    def cerrarHtmlErrores(self):
+        self.archivo.write("</tr>")
+        self.archivo.write("</table>")
+        self.archivo.write("</body>")
+        self.archivo.write("</html>")
+        self.archivo.close()
