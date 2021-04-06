@@ -24,6 +24,12 @@ class Principal(ttk.Frame):
         self.estaVisualizado2=False
         self.esOpe2=False
 
+        self.abHtml=Archivo()
+        self.abHtml.abrirHtmlOperacion()
+
+        self.error=Archivo()
+        self.error.abrirHtmlErrores()
+
         ventana.title("Matrices")
 
         pnlMenu=Frame(ventana,height=760,width=225,bg="#282c34")
@@ -118,7 +124,7 @@ class Principal(ttk.Frame):
                           activebackground="#282c34",
                           overrelief="flat",
                           cursor="hand2",
-                          command=self.cargarArchivo)
+                          command=self.genReporte)
         btnReporte.place(x=-95,y=194)
         self.img4=Image.open('imagen/ayuda.png')
         #self.img=self.img.resize((55,40),Image.ANTIALIAS)
@@ -134,7 +140,7 @@ class Principal(ttk.Frame):
                           activebackground="#282c34",
                           overrelief="flat",
                           cursor="hand2",
-                          command=self.cargarArchivo)
+                          command=self.datosEstudiante)
         btnAyuda.place(x=-103,y=242)
 
 
@@ -772,6 +778,9 @@ class Principal(ttk.Frame):
         self.Mat2.image=self.imgMat2
         self.Mat2.place(x=400,y=100)
 
+        self.abHtml.datosHtmlOperacion(self.btnOperacion1.cget("text"),nombre)
+        messagebox.showinfo(message=self.btnOperacion1.cget("text"),title="Informacion")
+
          #print(self.cmbMatriz1.get())
 
     def imgOperacion(self,nombre):
@@ -785,6 +794,7 @@ class Principal(ttk.Frame):
                         compound="top")
         self.Mat2.image=self.imgMat2
         self.Mat2.place(x=400,y=100)
+
 
     def imgOperacionR(self,nombre):
         self.estaVisualizado2=True
@@ -811,6 +821,8 @@ class Principal(ttk.Frame):
         arch.graficarProy(dato,2)
         nombre=nombre+"G.Vertical"
         self.imgOperacion(nombre)
+        self.abHtml.datosHtmlOperacion(self.btnOperacion2.cget("text"),nombre)
+        messagebox.showinfo(message=self.btnOperacion2.cget("text"),title="Informacion")
 
     def oprMatriz3(self):
         arch=Archivo()
@@ -822,6 +834,8 @@ class Principal(ttk.Frame):
         arch.graficarProy(dato,3)
         nombre=nombre+"Transpuesta"
         self.imgOperacion(nombre)
+        self.abHtml.datosHtmlOperacion(self.btnOperacion3.cget("text"),nombre)
+        messagebox.showinfo(message=self.btnOperacion3.cget("text"),title="Informacion")
 
     def oprMatriz4(self):
         arch=Archivo()
@@ -835,12 +849,28 @@ class Principal(ttk.Frame):
         hFila=int(self.hFila.get())
         hColumna=int(self.hColumna.get())
 
-        arch.graficarRellenarArea(0,dato,dFila,hFila,dColumna,hColumna)
-        nombre=nombre+"Limpiar"
-        self.imgOperacion(nombre)
+        if(dFila>int(dato.fila)):
+            self.error.datosHtmlErrores(self.btnOperacion4.cget("text"),nombre,"Valor incorrecto de Fila Desde \nEs mayor")
+            messagebox.showinfo(message="Valor incorrecto de Fila Desde \nEs mayor",title="Informacion")
+        else:
+            if(dColumna>int(dato.columna)):
+                self.error.datosHtmlErrores(self.btnOperacion4.cget("text"),nombre,"Valor incorrecto de Columna Desde \nEs mayor")
+                messagebox.showinfo(message="Valor incorrecto de Columna Desde \nEs mayor",title="Informacion")
+            else:
+                if(hFila>int(dato.fila)):
+                    self.error.datosHtmlErrores(self.btnOperacion4.cget("text"),nombre,"Valor incorrectos de Fila Hasta \nEs mayor")
+                    messagebox.showinfo(message="Valor incorrectos de Fila Hasta \nEs mayor",title="Informacion")
+                else:
+                    if(hColumna>int(dato.columna)):
+                        self.error.datosHtmlErrores(self.btnOperacion4.cget("text"),nombre,"Valor incorrecto de Columna Hasta \nEs mayor")
+                        messagebox.showinfo(message="Valor incorrecto de Columna Hasta \nEs mayor",title="Informacion")
+                    else:
+                        arch.graficarRellenarArea(0,dato,dFila,hFila,dColumna,hColumna)
+                        nombre=nombre+"Limpiar"
+                        self.imgOperacion(nombre)
+                        self.abHtml.datosHtmlOperacion(self.btnOperacion4.cget("text"),nombre)
+                        messagebox.showinfo(message=self.btnOperacion4.cget("text"),title="Informacion")
 
-
-        messagebox.showinfo(message=self.btnOperacion4.cget("text"),title="Informacion")
     def oprMatriz5(self):
         arch=Archivo()
         nombre=self.cmbMatriz1.get()
@@ -852,12 +882,23 @@ class Principal(ttk.Frame):
         Columna=int(self.dColumnaH.get())
         nElementos=int(self.hColumnaEH.get())
 
-        arch.graficarRellenarArea(1,dato,Fila,Columna,nElementos,0)
-        nombre=nombre+"LineaHorizontal"
-
-        self.imgOperacion(nombre)
-
-        messagebox.showinfo(message=self.btnOperacion5.cget("text"),title="Informacion")
+        if(Fila>int(dato.fila)):
+            self.error.datosHtmlErrores(self.btnOperacion5.cget("text"),nombre,"Valor incorrecto de Fila Desde \nEs mayor")
+            messagebox.showinfo(message="Valor incorrecto de Fila Desde \nEs mayor",title="Informacion")
+        else:
+            if(Columna>int(dato.columna)):
+                self.error.datosHtmlErrores(self.btnOperacion5.cget("text"),nombre,"Valor incorrecto de Columna Desde \nEs mayor")
+                messagebox.showinfo(message="Valor incorrecto de Columna Desde \nEs mayor",title="Informacion")
+            else:
+                if(nElementos>int(dato.columna)):
+                    self.error.datosHtmlErrores(self.btnOperacion5.cget("text"),nombre,"Valor incorrectos de elmentos es mayor ")
+                    messagebox.showinfo(message="El numero de elementos \nEs mayor a las columnas",title="Informacion")
+                else:
+                    arch.graficarRellenarArea(1,dato,Fila,Columna,nElementos,0)
+                    nombre=nombre+"LineaHorizontal"
+                    self.imgOperacion(nombre)
+                    self.abHtml.datosHtmlOperacion(self.btnOperacion5.cget("text"),nombre)
+                    messagebox.showinfo(message=self.btnOperacion5.cget("text"),title="Informacion")
     def oprMatriz6(self):
         arch=Archivo()
         nombre=self.cmbMatriz1.get()
@@ -869,10 +910,23 @@ class Principal(ttk.Frame):
         Columna=int(self.dColumnaV.get())
         nElementos=int(self.hColumnaEV.get())
 
-        arch.graficarRellenarArea(2,dato,Fila,Columna,nElementos,0)
-        nombre=nombre+"LineaVertical"
-        self.imgOperacion(nombre)
-        messagebox.showinfo(message=self.btnOperacion6.cget("text"),title="Informacion")
+        if(Fila>int(dato.fila)):
+            self.error.datosHtmlErrores(self.btnOperacion6.cget("text"),nombre,"Valor incorrecto de Fila Desde \nEs mayor")
+            messagebox.showinfo(message="Valor incorrecto de Fila Desde \nEs mayor",title="Informacion")
+        else:
+            if(Columna>int(dato.columna)):
+                self.error.datosHtmlErrores(self.btnOperacion6.cget("text"),nombre,"Valor incorrecto de Columna Desde \nEs mayor")
+                messagebox.showinfo(message="Valor incorrecto de Columna Desde \nEs mayor",title="Informacion")
+            else:
+                if(nElementos>int(dato.fila)):
+                    self.error.datosHtmlErrores(self.btnOperacion6.cget("text"),nombre,"Valor incorrectos de Fila Hasta \nEs mayor")
+                    messagebox.showinfo(message="El numero de elementos \nEs mayor a las filas",title="Informacion")
+                else:
+                    arch.graficarRellenarArea(2,dato,Fila,Columna,nElementos,0)
+                    nombre=nombre+"LineaVertical"
+                    self.imgOperacion(nombre)
+                    self.abHtml.datosHtmlOperacion(self.btnOperacion6.cget("text"),nombre)
+                    messagebox.showinfo(message=self.btnOperacion6.cget("text"),title="Informacion")
 
     def oprMatriz7(self):
         arch=Archivo()
@@ -887,10 +941,27 @@ class Principal(ttk.Frame):
         hFila=int(self.hFilaR.get())
         hColumna=int(self.hColumnaR.get())
 
-        arch.graficarRellenarArea(3,dato,dFila,hFila,dColumna,hColumna)
-        nombre=nombre+"Rectangulo"
-        self.imgOperacion(nombre)
-        messagebox.showinfo(message=self.btnOperacion7.cget("text"),title="Informacion")
+        if(dFila>int(dato.fila)):
+            self.error.datosHtmlErrores(self.btnOperacion7.cget("text"),nombre,"Valor incorrecto de Fila Desde \nEs mayor")
+            messagebox.showinfo(message="Valor incorrecto de Fila Desde \nEs mayor",title="Informacion")
+        else:
+            if(dColumna>int(dato.columna)):
+                self.error.datosHtmlErrores(self.btnOperacion7.cget("text"),nombre,"Valor incorrecto de Columna Desde \nEs mayor")
+                messagebox.showinfo(message="Valor incorrecto de Columna Desde \nEs mayor",title="Informacion")
+            else:
+                if(hFila>int(dato.fila)):
+                    self.error.datosHtmlErrores(self.btnOperacion7.cget("text"),nombre,"Valor incorrectos de Fila Hasta \nEs mayor")
+                    messagebox.showinfo(message="Valor incorrectos de Fila Hasta \nEs mayor",title="Informacion")
+                else:
+                    if(hColumna>int(dato.columna)):
+                        self.error.datosHtmlErrores(self.btnOperacion7.cget("text"),nombre,"Valor incorrecto de Columna Hasta \nEs mayor")
+                        messagebox.showinfo(message="Valor incorrecto de Columna Hasta \nEs mayor",title="Informacion")
+                    else:
+                        arch.graficarRellenarArea(3,dato,dFila,hFila,dColumna,hColumna)
+                        nombre=nombre+"Rectangulo"
+                        self.imgOperacion(nombre)
+                        self.abHtml.datosHtmlOperacion(self.btnOperacion7.cget("text"),nombre)
+                        messagebox.showinfo(message=self.btnOperacion7.cget("text"),title="Informacion")
 
     def oprMatriz8(self):
         arch=Archivo()
@@ -904,10 +975,27 @@ class Principal(ttk.Frame):
         hFila=int(self.hFilaT.get())
         hColumna=int(self.hColumnaT.get())
 
-        arch.graficarRellenarArea(4,dato,dFila,hFila,dColumna,hColumna)
-        nombre=nombre+"Triangulo"
-        self.imgOperacion(nombre)
-        messagebox.showinfo(message=self.btnOperacion8.cget("text"),title="Informacion")
+        if(dFila>int(dato.fila)):
+            self.error.datosHtmlErrores(self.btnOperacion8.cget("text"),nombre,"Valor incorrecto de Fila Desde \nEs mayor")
+            messagebox.showinfo(message="Valor incorrecto de Fila Desde \nEs mayor",title="Informacion")
+        else:
+            if(dColumna>int(dato.columna)):
+                self.error.datosHtmlErrores(self.btnOperacion8.cget("text"),nombre,"Valor incorrecto de Columna Desde \nEs mayor")
+                messagebox.showinfo(message="Valor incorrecto de Columna Desde \nEs mayor",title="Informacion")
+            else:
+                if(hFila>int(dato.fila)):
+                    self.error.datosHtmlErrores(self.btnOperacion8.cget("text"),nombre,"Valor incorrectos de Fila Hasta \nEs mayor")
+                    messagebox.showinfo(message="Valor incorrectos de Fila Hasta \nEs mayor",title="Informacion")
+                else:
+                    if(hColumna>int(dato.columna)):
+                        self.error.datosHtmlErrores(self.btnOperacion8.cget("text"),nombre,"Valor incorrecto de Columna Hasta \nEs mayor")
+                        messagebox.showinfo(message="Valor incorrecto de Columna Hasta \nEs mayor",title="Informacion")
+                    else:
+                        arch.graficarRellenarArea(4,dato,dFila,hFila,dColumna,hColumna)
+                        nombre=nombre+"Triangulo"
+                        self.imgOperacion(nombre)
+                        self.abHtml.datosHtmlOperacion(self.btnOperacion8.cget("text"),nombre)
+                        messagebox.showinfo(message=self.btnOperacion8.cget("text"),title="Informacion")
 
 
 ###    Operaciones con dos matrices   ###
@@ -924,11 +1012,16 @@ class Principal(ttk.Frame):
             dato2=self.listaMat.getDato(j)
             if(dato2.nombre==nombre2):
                 break
-        arch.graficarOperacion(1,dato1,dato2)
-        nombre=nombre1+"Union"+nombre2
-        self.imgOperacionR(nombre)
 
-        messagebox.showinfo(message=self.btnOperacion21.cget("text"),title="Informacion")
+        if(dato1.fila>dato2.fila or dato2.fila>dato1.fila):
+            self.error.datosHtmlErrores(self.btnOperacion21.cget("text"),nombre1+","+nombre2,"Las matrices no tienen las mismas dimensiones")
+            messagebox.showinfo(message="Las matrices no tienen las mismas dimensiones",title="Informacion")
+        else:
+            arch.graficarOperacion(1,dato1,dato2)
+            nombre=nombre1+"Union"+nombre2
+            self.imgOperacionR(nombre)
+            messagebox.showinfo(message=self.btnOperacion21.cget("text"),title="Informacion")
+            self.abHtml.datosHtmlOperacion(self.btnOperacion21.cget("text"),nombre)
 
 
     def oprMatriz22(self):
@@ -943,12 +1036,19 @@ class Principal(ttk.Frame):
             dato2=self.listaMat.getDato(j)
             if(dato2.nombre==nombre2):
                 break
-        arch.graficarOperacion(2,dato1,dato2)
-        nombre=nombre1+"Interseccion"+nombre2
-        self.imgOperacionR(nombre)
+
+        if(dato1.fila>dato2.fila or dato2.fila>dato1.fila):
+            self.error.datosHtmlErrores(self.btnOperacion22.cget("text"),nombre1+","+nombre2,"Las matrices no tienen las mismas dimensiones")
+            messagebox.showinfo(message="Las matrices no tienen las mismas dimensiones",title="Informacion")
+        else:
+
+            arch.graficarOperacion(2,dato1,dato2)
+            nombre=nombre1+"Interseccion"+nombre2
+            self.imgOperacionR(nombre)
+            messagebox.showinfo(message=self.btnOperacion22.cget("text"),title="Informacion")
+            self.abHtml.datosHtmlOperacion(self.btnOperacion22.cget("text"),nombre)
 
 
-        messagebox.showinfo(message=self.btnOperacion22.cget("text"),title="Informacion")
     def oprMatriz23(self):
         arch=Archivo()
         nombre1=self.cmbMatriz1.get()
@@ -961,11 +1061,18 @@ class Principal(ttk.Frame):
             dato2=self.listaMat.getDato(j)
             if(dato2.nombre==nombre2):
                 break
-        arch.graficarOperacion(3,dato1,dato2)
-        nombre=nombre1+"Diferencia"+nombre2
-        self.imgOperacionR(nombre)
 
-        messagebox.showinfo(message=self.btnOperacion23.cget("text"),title="Informacion")
+        if(dato1.fila>dato2.fila or dato2.fila>dato1.fila):
+            self.error.datosHtmlErrores(self.btnOperacion23.cget("text"),nombre1+","+nombre2,"Las matrices no tienen las mismas dimensiones")
+            messagebox.showinfo(message="Las matrices no tienen las mismas dimensiones",title="Informacion")
+        else:
+
+            arch.graficarOperacion(3,dato1,dato2)
+            nombre=nombre1+"Diferencia"+nombre2
+            self.imgOperacionR(nombre)
+            messagebox.showinfo(message=self.btnOperacion23.cget("text"),title="Informacion")
+            self.abHtml.datosHtmlOperacion(self.btnOperacion23.cget("text"),nombre)
+
     def oprMatriz24(self):
         arch=Archivo()
         nombre1=self.cmbMatriz1.get()
@@ -978,15 +1085,35 @@ class Principal(ttk.Frame):
             dato2=self.listaMat.getDato(j)
             if(dato2.nombre==nombre2):
                 break
-        arch.graficarOperacion(4,dato1,dato2)
-        nombre=nombre1+"Dif_Simetrica"+nombre2
-        self.imgOperacionR(nombre)
 
+        if(dato1.fila>dato2.fila or dato2.fila>dato1.fila):
+            self.error.datosHtmlErrores(self.btnOperacion24.cget("text"),nombre1+","+nombre2,"Las matrices no tienen las mismas dimensiones")
+            messagebox.showinfo(message="Las matrices no tienen las mismas dimensiones",title="Informacion")
+        else:
+            arch.graficarOperacion(4,dato1,dato2)
+            nombre=nombre1+"Dif_Simetrica"+nombre2
+            self.imgOperacionR(nombre)
+            messagebox.showinfo(message=self.btnOperacion24.cget("text"),title="Informacion")
+            self.abHtml.datosHtmlOperacion(self.btnOperacion24.cget("text"),nombre)
 
+### Reporte ###
+    def genReporte(self):
+        self.abHtml.cerrarHtmlOperacion()
+        self.error.cerrarHtmlErrores()
 
+        messagebox.showinfo(message="Reportes generados en la carpeta Html",title="Informacion")
+### Datos de Estudiante  ###
+    def datosEstudiante(self):
 
+        self.imgEst=Image.open('imagen/datosPersonales.png')
+        self.imgEst=self.imgEst.resize((625,250),Image.ANTIALIAS)
+        self.imgEst=ImageTk.PhotoImage(self.imgEst)
+        self.est=Label(self.pnlPrincipal,text="Datos Estudiante",
+                        image=self.imgEst,
+                        compound="top")
+        self.est.image=self.imgEst
+        self.est.place(x=50,y=150)
 
-        messagebox.showinfo(message=self.btnOperacion24.cget("text"),title="Informacion")
 
 ####  Etiqueta para Operaciones  ####
 

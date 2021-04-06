@@ -236,6 +236,37 @@ class Matriz:
                 linea=""
 
         return matAux
+    def contar(self,datoMatriz):
+
+
+
+        imagen=datoMatriz
+        linea=""
+        lin=1
+        col=0
+        vacio=0
+        lleno=0
+
+        matAux=Matriz("Aux")
+
+        for i in range(1,len(imagen)):
+            linea=linea+str(imagen[i])
+            if(imagen[i]=="-"):
+                vacio+=1
+
+                col+=1
+            if(imagen[i]=="*"):
+                lleno+=1
+                col+=1
+                matAux.agregar(lin,col,"*")
+                #print("fila =", lin ,"Columna= ",col)
+            if(imagen[i]=="\n"):
+                col=0
+                lin+=1
+                #print(linea)
+                linea=""
+
+        return lleno,vacio
 
     def girarHorizontal(self,dtsMatriz,matOrginal):
         mat=dtsMatriz
